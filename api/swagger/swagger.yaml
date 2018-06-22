@@ -32,6 +32,25 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Adds a new job to the list
+      # job info to be stored
+      parameters:
+        - name: job
+          description: Job properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Job"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /hello:
     # binds a127 app logic to a route
@@ -61,6 +80,30 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Job:
+    type: object
+    properties:
+      title:
+        type: string
+        description: job title
+      status:
+        type: string
+        description: job status
+    required:
+      - title
+      - status
+  GeneralResponse:
+    type: object
+    properties:
+      success:
+        type: number
+        description: returns 1 if successful
+      description:
+        type: string
+        description: a short comment 
+    required:
+      - success
+      - description
   GetJobsListResponse:
     required:
       - jobs
