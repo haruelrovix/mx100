@@ -2,6 +2,7 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
+var db = require('./api/models');
 var app = require('express')();
 module.exports = app; // for testing
 
@@ -9,8 +10,19 @@ var config = {
   appRoot: __dirname // required config
 };
 
-SwaggerExpress.create(config, function(err, swaggerExpress) {
-  if (err) { throw err; }
+SwaggerExpress.create(config, function (err, swaggerExpress) {
+  if (err) {
+    throw err;
+  }
+
+  // connect to db
+  db.sequelize.sync()
+    .then(() => {
+      console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+      console.error('Unable to connect to the database:', err);
+    });
 
   // install middleware
   app.use(SwaggerUi(swaggerExpress.runner.swagger));

@@ -21,6 +21,7 @@ paths:
   /jobs:
     x-swagger-router-controller: jobs
     get:
+      operationId: getAll
       description: Returns a list of jobs
       # define the type of response for Success "200" and Error
       responses:
@@ -33,6 +34,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
     post:
+      operationId: save
       description: Adds a new job to the list
       # job info to be stored
       parameters:
