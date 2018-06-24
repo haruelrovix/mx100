@@ -48,7 +48,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/PostResponse"
         default:
           description: Error
           schema:
@@ -88,12 +88,27 @@ definitions:
       title:
         type: string
         description: job title
-      status:
+      description:
         type: string
+        description: job description
+      status:
+        type: number
         description: job status
     required:
       - title
       - status
+  PostResponse:
+    type: object
+    properties:
+      id:
+        type: number
+        description: returns last inserted id if successful
+      message:
+        type: string
+        description: a short comment
+    required:
+      - id
+      - message
   GeneralResponse:
     type: object
     properties:
@@ -119,6 +134,8 @@ definitions:
             id:
               type: number
             title:
+              type: string
+            description:
               type: string
             status:
               type: string

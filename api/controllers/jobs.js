@@ -20,6 +20,7 @@ function getAll(req, res, next) {
       const {
         id,
         title,
+        description,
         JobPostStatus: {
           description: status
         }
@@ -30,6 +31,7 @@ function getAll(req, res, next) {
       return {
         id,
         title,
+        description,
         status
       };
     });
@@ -37,15 +39,29 @@ function getAll(req, res, next) {
     res.json({
       jobs
     });
-  }).catch(function (err) {
+  }).catch((err) => {
     res.status(204).send(err);
   });
 }
 
 // POST /jobs operationId
 function save(req, res, next) {
-  res.json({
-    success: 1, // db.save(req.body),
-    description: "Job added successfully"
+  const { title, description, status } = req.body;
+
+  JobPost.create({
+    title,
+    description,
+    JobPostStatusId: status
+  }).then(result => {
+    const job = result.get({
+      plain: true
+    });
+
+    res.json({
+      message: "Job added successfully",
+      id: job.id
+    });
+  }).catch((err) => {
+    res.status(204).send(err);
   });
 }
