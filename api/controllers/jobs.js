@@ -10,11 +10,11 @@ module.exports = {
 };
 
 // GET /jobs operationId
-function getAll(req, res, next) {
+function getAll(req, res) {
   JobPost.findAll({
     include: [
       JobPostStatus
-    ],
+    ]
   }).then((result) => {
     const jobs = result.map((node) => {
       const {
@@ -45,7 +45,7 @@ function getAll(req, res, next) {
 }
 
 // POST /jobs operationId
-function save(req, res, next) {
+function save(req, res) {
   const { title, description, status } = req.body;
 
   JobPost.create({

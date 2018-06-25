@@ -1,13 +1,18 @@
 'use strict';
 
-var SwaggerExpress = require('swagger-express-mw');
-var SwaggerUi = require('swagger-tools/middleware/swagger-ui');
-var db = require('./api/models');
-var app = require('express')();
+const SwaggerExpress = require('swagger-express-mw');
+const SwaggerUi = require('swagger-tools/middleware/swagger-ui');
+const db = require('./api/models');
+const auth = require('./api/helpers/auth');
+const app = require('express')();
+
 module.exports = app; // for testing
 
-var config = {
-  appRoot: __dirname // required config
+const config = {
+  appRoot: __dirname, // required config
+  swaggerSecurityHandlers: {
+    Bearer: auth.verifyToken
+  }
 };
 
 SwaggerExpress.create(config, function (err, swaggerExpress) {
@@ -29,7 +34,7 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
 
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  const port = process.env.PORT || 10010;
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/hello']) {

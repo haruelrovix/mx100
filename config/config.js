@@ -5,5 +5,9 @@ module.exports = {
     name: 'mx100',
     dialect: 'sqlite',
     storage: 'mx100.db'
+  },
+  auth: {
+    secret: "it'S3c12eT,d0od!",
+    issuer: "surat@havit.web.id"
   }
 };

@@ -6,11 +6,19 @@ module.exports = function (sequelize, DataTypes) {
     },
     password: {
       type: DataTypes.STRING
+    },
+    UserTypeId: {
+      type: DataTypes.INTEGER,
+      field: 'user_type_id'
     }
   }, {
     tableName: 'user_account',
     timestamps: false
   });
+
+  User.associate = function (models) {
+    User.belongsTo(models.UserType);
+  }
 
   return User;
 };
