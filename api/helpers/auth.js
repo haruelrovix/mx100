@@ -3,7 +3,8 @@
 const jwt = require("jsonwebtoken");
 const {
   secret,
-  issuer
+  iss,
+  expiresIn
 } = require('../../config/config').auth;
 
 function sendError(req) {
@@ -38,7 +39,7 @@ exports.verifyToken = function (req, authOrSecDef, token, callback) {
         const roleMatch = currentScopes.indexOf(decodedToken.role) !== -1;
 
         // Check if the issuer matches
-        const issuerMatch = decodedToken.iss === issuer;
+        const issuerMatch = decodedToken.iss === iss;
 
         if (roleMatch && issuerMatch) {
           // Add the token to the request so that we can access it in the endpoint code if necessary
@@ -64,11 +65,11 @@ exports.verifyToken = function (req, authOrSecDef, token, callback) {
 exports.issueToken = function (sub, role) {
   return jwt.sign({
       sub,
-      iss: issuer,
+      iss,
       role
     },
     secret, {
-      expiresIn: '3h'
+      expiresIn
     }
   );
 };

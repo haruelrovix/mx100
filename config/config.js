@@ -8,6 +8,7 @@ module.exports = {
   },
   auth: {
     secret: "it'S3c12eT,d0od!",
-    issuer: "surat@havit.web.id"
+    iss: 'surat@havit.web.id',
+    expiresIn: '3h'
   }
 };
