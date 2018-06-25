@@ -11,7 +11,8 @@ const { database: { name, dialect, storage } } = config;
 
 const sequelize = new Sequelize(name, null, null, {
   dialect,
-  storage
+  storage,
+  operatorsAliases: false
 });
 
 fs
