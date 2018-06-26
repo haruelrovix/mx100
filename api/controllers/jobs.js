@@ -1,5 +1,6 @@
 'use strict';
 
+const Constants = require('../helpers/constants');
 const JobPost = require('../models').JobPost;
 const JobPostStatus = require('../models').JobPostStatus;
 
@@ -12,6 +13,9 @@ module.exports = {
 // GET /jobs operationId
 function getAll(req, res) {
   JobPost.findAll({
+    where: req.auth.role === Constants.Role.Freelancer ? {
+      '$JobPostStatus.description$': Constants.JobPostStatus.Published
+    } : {},
     include: [
       JobPostStatus
     ]
@@ -46,7 +50,11 @@ function getAll(req, res) {
 
 // POST /jobs operationId
 function save(req, res) {
-  const { title, description, status } = req.body;
+  const {
+    title,
+    description,
+    status
+  } = req.body;
 
   JobPost.create({
     title,
