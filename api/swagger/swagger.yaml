@@ -41,6 +41,41 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /jobpoststatus:
+    x-swagger-router-controller: JobPostStatus
+    get:
+      operationId: getJobPostStatus
+      description: Returns a list of job post status
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization Header
+          required: true
+          type: string
+      tags:
+        - Job Post Status
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+        - Freelancer
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetJobPostStatusResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
+
   /jobs:
     x-swagger-router-controller: jobs
     get:
@@ -279,6 +314,20 @@ definitions:
             description:
               type: string
             status:
+              type: string
+  GetJobPostStatusResponse:
+    required:
+      - jobPostStatus
+    properties:
+      # The array of job post status
+      jobPostStatus:
+        type: array
+        items: 
+          type: object
+          properties:
+            id:
+              type: integer
+            description:
               type: string
   GetJobResponse:
     required:
