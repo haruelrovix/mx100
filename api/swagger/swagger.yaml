@@ -5,7 +5,7 @@ info:
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
-basePath: /
+basePath: /api
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -17,7 +17,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /accounts:
+  /login:
     x-swagger-router-controller: accounts
     post:
       operationId: login
@@ -52,6 +52,8 @@ paths:
           description: JWT Authorization Header
           required: true
           type: string
+      tags:
+        - Jobs
       security:
         - Bearer: []
       x-security-scopes:
@@ -88,6 +90,8 @@ paths:
           in: header
           required: true
           type: string
+      tags:
+        - Jobs
       security:
         - Bearer: []
       x-security-scopes:
@@ -126,6 +130,8 @@ paths:
           in: header
           required: true
           type: string
+      tags:
+        - Jobs
       security:
         - Bearer: []
       x-security-scopes:
@@ -154,6 +160,8 @@ paths:
           description: JWT Authorization Header
           required: true
           type: string
+      tags:
+        - Jobs
       security:
         - Bearer: []
       x-security-scopes:
