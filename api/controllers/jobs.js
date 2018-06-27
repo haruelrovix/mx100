@@ -7,7 +7,8 @@ const JobPostStatus = require('../models').JobPostStatus;
 // Exports all the functions to perform on the db
 module.exports = {
   getAll,
-  save
+  save,
+  edit
 };
 
 // GET /jobs operationId
@@ -69,6 +70,40 @@ function save(req, res) {
       message: "Job added successfully",
       id: job.id
     });
+  }).catch((err) => {
+    res.status(204).send(err);
+  });
+}
+
+// PUT /jobs/{id} operationId
+function edit(req, res) {
+  const {
+    value: id
+  } = req.swagger.params.id;
+
+  const {
+    title,
+    description,
+    status
+  } = req.body;
+
+  JobPost.update({
+    title,
+    description,
+    JobPostStatusId: status
+  }, {
+    where: {
+      id
+    }
+  }).then(result => {
+    if (result[0] === 0) {
+      return res.status(404).send({
+        message: "Job not found",
+        id
+      });
+    }
+
+    res.status(204).send();
   }).catch((err) => {
     res.status(204).send(err);
   });

@@ -40,6 +40,45 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /jobs/{id}:
+    x-swagger-router-controller: jobs
+    put:
+      operationId: edit
+      description: Updates job for given id
+      # job info to be updated
+      parameters:
+        - name: job
+          description: Job properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Job"
+        - name: id
+          description: Job with given id to be updated
+          in: path
+          required: true
+          type: integer
+        - name: Authorization
+          description: JWT Authorization Header
+          in: header
+          required: true
+          type: string
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PostResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /jobs:
     x-swagger-router-controller: jobs
     get:
@@ -83,8 +122,8 @@ paths:
           schema:
             $ref: "#/definitions/Job"
         - name: Authorization
-          in: header
           description: JWT Authorization Header
+          in: header
           required: true
           type: string
       security:
@@ -162,7 +201,7 @@ definitions:
     properties:
       id:
         type: number
-        description: returns last inserted id if successful
+        description: returns last inserted / updated id if successful
       message:
         type: string
         description: a short comment
