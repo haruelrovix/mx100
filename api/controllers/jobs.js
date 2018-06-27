@@ -8,7 +8,8 @@ const JobPostStatus = require('../models').JobPostStatus;
 module.exports = {
   getAll,
   save,
-  edit
+  edit,
+  get
 };
 
 // GET /jobs operationId
@@ -105,6 +106,52 @@ function edit(req, res) {
 
     res.status(204).send();
   }).catch((err) => {
+    res.status(204).send(err);
+  });
+}
+
+// GET /jobs/{id} operationId
+function get(req, res) {
+  const {
+    value: id
+  } = req.swagger.params.id;
+
+  JobPost.findOne({
+    where: {
+      id
+    },
+    include: [
+      JobPostStatus
+    ]
+  }).then(result => {
+    if (!result) {
+      return res.status(404).send({
+        message: "Job not found",
+        id: req.swagger.params.id.value
+      });
+    }
+
+    const {
+      id,
+      title,
+      description,
+      JobPostStatus: {
+        description: status
+      }
+    } = result.get({
+      plain: true
+    });
+
+    res.json({
+      job: {
+        id,
+        title,
+        description,
+        status
+      }
+    });
+  }).catch((err) => {
+    console.log(err);
     res.status(204).send(err);
   });
 }

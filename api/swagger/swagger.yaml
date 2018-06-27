@@ -41,55 +41,17 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /jobs/{id}:
-    x-swagger-router-controller: jobs
-    put:
-      operationId: edit
-      description: Updates job for given id
-      # job info to be updated
-      parameters:
-        - name: job
-          description: Job properties
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/Job"
-        - name: id
-          description: Job with given id to be updated
-          in: path
-          required: true
-          type: integer
-        - name: Authorization
-          description: JWT Authorization Header
-          in: header
-          required: true
-          type: string
-      security:
-        - Bearer: []
-      x-security-scopes:
-        - Administrator
-        - Employer
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/PostResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
   /jobs:
     x-swagger-router-controller: jobs
     get:
       operationId: getAll
       description: Returns a list of jobs
       parameters:
-      - name: Authorization
-        in: header
-        description: JWT Authorization Header
-        required: true
-        type: string
+        - name: Authorization
+          in: header
+          description: JWT Authorization Header
+          required: true
+          type: string
       security:
         - Bearer: []
       x-security-scopes:
@@ -134,6 +96,82 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: "#/definitions/PostResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /jobs/{id}:
+    x-swagger-router-controller: jobs
+    put:
+      operationId: edit
+      description: Updates job for given id
+      # job info to be updated
+      parameters:
+        - name: job
+          description: Job properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Job"
+        - name: id
+          description: Job with given id to be updated
+          in: path
+          required: true
+          type: integer
+        - name: Authorization
+          description: JWT Authorization Header
+          in: header
+          required: true
+          type: string
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PostResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      operationId: get
+      description: Returns a job
+      parameters:
+        - name: id
+          description: Job with given id to be returned
+          in: path
+          required: true
+          type: integer
+        - name: Authorization
+          in: header
+          description: JWT Authorization Header
+          required: true
+          type: string
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+        - Freelancer
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetJobResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
           schema:
             $ref: "#/definitions/PostResponse"
         default:
@@ -191,7 +229,7 @@ definitions:
         type: string
         description: job description
       status:
-        type: number
+        type: integer
         description: job status
     required:
       - title
@@ -200,7 +238,7 @@ definitions:
     type: object
     properties:
       id:
-        type: number
+        type: integer
         description: returns last inserted / updated id if successful
       message:
         type: string
@@ -216,18 +254,6 @@ definitions:
         description: a generated JWT token
     required:
       - token
-  GeneralResponse:
-    type: object
-    properties:
-      success:
-        type: number
-        description: returns 1 if successful
-      description:
-        type: string
-        description: a short comment 
-    required:
-      - success
-      - description
   GetJobsListResponse:
     required:
       - jobs
@@ -239,13 +265,28 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             title:
               type: string
             description:
               type: string
             status:
               type: string
+  GetJobResponse:
+    required:
+      - job
+    properties:
+      job:
+        type: object
+        properties:
+          id:
+            type: integer
+          title:
+            type: string
+          description:
+            type: string
+          status:
+            type: string
   HelloWorldResponse:
     required:
       - message
