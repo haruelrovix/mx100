@@ -1,6 +1,7 @@
 'use strict';
 
 const Constants = require('../helpers/constants');
+const UpdateRow = require('../helpers/updateRow');
 const User = require('../models').User;
 const JobPost = require('../models').JobPost;
 const Proposal = require('../models').Proposal;
@@ -8,7 +9,8 @@ const ProposalStatus = require('../models').ProposalStatus;
 
 // Exports all the functions to perform on the db
 module.exports = {
-  submit
+  submit,
+  editProposal
 };
 
 // POST /submit operationId
@@ -69,4 +71,13 @@ function submit(req, res) {
   }).catch(err => {
     res.status(204).send(err);
   });
+}
+
+// PUT /proposal/{id} operationId
+function editProposal(req, res) {
+  const payload = {
+    ProposalStatusId: req.swagger.params.proposalStatusId.value
+  };
+
+  return UpdateRow(req, res, 'Proposal', payload, 'ProposalStatusId');
 }

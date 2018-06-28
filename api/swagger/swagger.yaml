@@ -155,6 +155,45 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /proposal/{id}:
+    x-swagger-router-controller: proposal
+    put:
+      operationId: editProposal
+      description: Accept or Decline proposal
+      # proposal info to be updated
+      parameters:
+        - name: id
+          description: Proposal with given id to be updated
+          in: path
+          required: true
+          type: integer
+        - name: proposalStatusId
+          description: "Proposal Status: 1 for Submitted, 2 for Declined"
+          in: query
+          required: true
+          type: integer
+        - name: Authorization
+          description: JWT Authorization Header
+          in: header
+          required: true
+          type: string
+      tags:
+        - Proposal
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PostResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /freelancerrank:
     x-swagger-router-controller: FreelancerRank
     get:
@@ -426,7 +465,7 @@ definitions:
         items: 
           type: object
           properties:
-            email:
+            freelancer:
               type: string
             rank:
               type: string

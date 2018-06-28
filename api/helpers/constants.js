@@ -15,5 +15,8 @@ module.exports = {
         Status: 'Submitted'
       }
     }
+  },
+  Sequelize: {
+    FKConstraintError: 'SequelizeForeignKeyConstraintError'
   }
 };

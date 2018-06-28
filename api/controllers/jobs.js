@@ -1,6 +1,7 @@
 'use strict';
 
 const Constants = require('../helpers/constants');
+const UpdateRow = require('../helpers/updateRow');
 const JobPost = require('../models').JobPost;
 const JobPostStatus = require('../models').JobPostStatus;
 const Proposal = require('../models').Proposal;
@@ -118,6 +119,13 @@ function save(req, res) {
       id: job.id
     });
   }).catch(err => {
+    if (err.name === Constants.Sequelize.FKConstraintError) {
+      return res.status(404).send({
+        message: 'Status not found',
+        id: status
+      });
+    }
+
     res.status(204).send(err);
   });
 }
@@ -125,35 +133,18 @@ function save(req, res) {
 // PUT /jobs/{id} operationId
 function edit(req, res) {
   const {
-    value: id
-  } = req.swagger.params.id;
-
-  const {
     title,
     description,
     status
   } = req.body;
 
-  JobPost.update({
+  const payload = {
     title,
     description,
     JobPostStatusId: status
-  }, {
-    where: {
-      id
-    }
-  }).then(result => {
-    if (result[0] === 0) {
-      return res.status(404).send({
-        message: "Job not found",
-        id
-      });
-    }
+  };
 
-    res.status(204).send();
-  }).catch(err => {
-    res.status(204).send(err);
-  });
+  return UpdateRow(req, res, 'JobPost', payload, 'JobPostStatusId');
 }
 
 // GET /jobs/{id} operationId
