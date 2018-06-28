@@ -75,6 +75,40 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /proposalstatus:
+    x-swagger-router-controller: ProposalStatus
+    get:
+      operationId: getProposalStatus
+      description: Returns a list of proposal status
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization Header
+          required: true
+          type: string
+      tags:
+        - Proposal Status
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+        - Freelancer
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetProposalStatusResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /proposal:
     x-swagger-router-controller: proposal
     post:
@@ -379,6 +413,20 @@ definitions:
             id:
               type: integer
             description:
+              type: string
+  GetProposalStatusResponse:
+    required:
+      - proposalStatus
+    properties:
+      # The array of proposal status
+      proposalStatus:
+        type: array
+        items: 
+          type: object
+          properties:
+            id:
+              type: integer
+            status:
               type: string
   GetJobResponse:
     required:
