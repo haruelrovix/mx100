@@ -155,6 +155,40 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /freelancerrank:
+    x-swagger-router-controller: FreelancerRank
+    get:
+      operationId: getFreelancerRank
+      description: Returns a list of Freelancer and its Rank
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization Header
+          required: true
+          type: string
+      tags:
+        - Freelancer Rank
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Administrator
+        - Employer
+        - Freelancer
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetFreelancerRankResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /jobs:
     x-swagger-router-controller: jobs
     get:
@@ -352,7 +386,7 @@ definitions:
         description: job description
       status:
         type: integer
-        description: job status
+        description: job post status id
     required:
       - title
       - status
@@ -382,6 +416,22 @@ definitions:
         description: a generated JWT token
     required:
       - token
+  GetFreelancerRankResponse:
+    required:
+      - freelancerRank
+    properties:
+      # The array of freelancer rank
+      freelancerRank:
+        type: array
+        items: 
+          type: object
+          properties:
+            email:
+              type: string
+            rank:
+              type: string
+            proposalSpace:
+              type: integer
   GetJobsListResponse:
     required:
       - jobs
