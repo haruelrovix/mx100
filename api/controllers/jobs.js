@@ -19,10 +19,35 @@ function isFreelancer(role) {
   return role === Constants.Role.Freelancer;
 }
 
+function getProposal(proposal, {
+  role,
+  userId
+}) {
+  // Freelancer should not allowed to see other freelancer proposal
+  const result = isFreelancer(role) ?
+    proposal.filter(item => item.UserId === userId) :
+    proposal;
+
+  return result.map(({
+    id,
+    message,
+    applyDate,
+    ProposalStatus: {
+      status
+    },
+    User
+  }) => ({
+    id,
+    freelancer: User.email,
+    message,
+    applyDate,
+    status
+  }))
+}
+
 // GET /jobs operationId
 function getAll(req, res) {
   const {
-    userId,
     role
   } = req.auth;
 
@@ -54,31 +79,12 @@ function getAll(req, res) {
         plain: true
       });
 
-      // Freelancer should not allowed to see other freelancer proposal
-      const proposal = isFreelancer(role) ?
-        Proposals.filter(proposal => proposal.UserId === userId) :
-        Proposals;
-
       return {
         id,
         title,
         description,
         status,
-        proposal: proposal.map(({
-          id,
-          message,
-          applyDate,
-          ProposalStatus: {
-            status
-          },
-          User
-        }) => ({
-          id,
-          freelancer: User.email,
-          message,
-          applyDate,
-          status
-        }))
+        proposal: getProposal(Proposals, req.auth)
       };
     });
 
@@ -161,7 +167,14 @@ function get(req, res) {
       id
     },
     include: [
-      JobPostStatus
+      JobPostStatus,
+      {
+        model: Proposal,
+        include: [
+          ProposalStatus,
+          User
+        ]
+      }
     ]
   }).then(result => {
     if (!result) {
@@ -177,7 +190,8 @@ function get(req, res) {
       description,
       JobPostStatus: {
         description: status
-      }
+      },
+      Proposals
     } = result.get({
       plain: true
     });
@@ -187,7 +201,8 @@ function get(req, res) {
         id,
         title,
         description,
-        status
+        status,
+        proposal: getProposal(Proposals, req.auth)
       }
     });
   }).catch(err => {
