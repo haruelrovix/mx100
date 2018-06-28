@@ -3,6 +3,9 @@
 const Constants = require('../helpers/constants');
 const JobPost = require('../models').JobPost;
 const JobPostStatus = require('../models').JobPostStatus;
+const Proposal = require('../models').Proposal;
+const ProposalStatus = require('../models').ProposalStatus;
+const User = require('../models').User;
 
 // Exports all the functions to perform on the db
 module.exports = {
@@ -12,14 +15,30 @@ module.exports = {
   get
 };
 
+function isFreelancer(role) {
+  return role === Constants.Role.Freelancer;
+}
+
 // GET /jobs operationId
 function getAll(req, res) {
+  const {
+    userId,
+    role
+  } = req.auth;
+
   JobPost.findAll({
-    where: req.auth.role === Constants.Role.Freelancer ? {
+    where: isFreelancer(role) ? {
       '$JobPostStatus.description$': Constants.JobPostStatus.Published
     } : {},
     include: [
-      JobPostStatus
+      JobPostStatus,
+      {
+        model: Proposal,
+        include: [
+          ProposalStatus,
+          User
+        ]
+      }
     ]
   }).then(result => {
     const jobs = result.map(node => {
@@ -29,16 +48,37 @@ function getAll(req, res) {
         description,
         JobPostStatus: {
           description: status
-        }
+        },
+        Proposals
       } = node.get({
         plain: true
       });
+
+      // Freelancer should not allowed to see other freelancer proposal
+      const proposal = isFreelancer(role) ?
+        Proposals.filter(proposal => proposal.UserId === userId) :
+        Proposals;
 
       return {
         id,
         title,
         description,
-        status
+        status,
+        proposal: proposal.map(({
+          id,
+          message,
+          applyDate,
+          ProposalStatus: {
+            status
+          },
+          User
+        }) => ({
+          id,
+          freelancer: User.email,
+          message,
+          applyDate,
+          status
+        }))
       };
     });
 
