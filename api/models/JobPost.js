@@ -17,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
 
   JobPost.associate = function (models) {
     JobPost.belongsTo(models.JobPostStatus);
+    JobPost.hasMany(models.Proposal);
   };
 
   return JobPost;

@@ -74,7 +74,52 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-    
+
+  /proposal:
+    x-swagger-router-controller: proposal
+    post:
+      operationId: submit
+      description: Submits proposal to any published job
+      parameters:
+        - name: proposal
+          description: Proposal properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Proposal"
+        - name: jobId
+          description: Published job with given Id to be submitted
+          in: query
+          required: true
+          type: integer
+        - name: Authorization
+          description: JWT Authorization Header
+          in: header
+          required: true
+          type: string
+      tags:
+        - Proposal
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - Freelancer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PostResponse"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/PostResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /jobs:
     x-swagger-router-controller: jobs
@@ -277,6 +322,12 @@ definitions:
     required:
       - title
       - status
+  Proposal:
+    type: object
+    properties:
+      message:
+        type: string
+        description: message to be submitted inside proposal
   PostResponse:
     type: object
     properties:

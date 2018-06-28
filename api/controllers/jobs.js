@@ -45,7 +45,7 @@ function getAll(req, res) {
     res.json({
       jobs
     });
-  }).catch((err) => {
+  }).catch(err => {
     res.status(204).send(err);
   });
 }
@@ -71,7 +71,7 @@ function save(req, res) {
       message: "Job added successfully",
       id: job.id
     });
-  }).catch((err) => {
+  }).catch(err => {
     res.status(204).send(err);
   });
 }
@@ -105,7 +105,7 @@ function edit(req, res) {
     }
 
     res.status(204).send();
-  }).catch((err) => {
+  }).catch(err => {
     res.status(204).send(err);
   });
 }
@@ -150,7 +150,7 @@ function get(req, res) {
         status
       }
     });
-  }).catch((err) => {
+  }).catch(err => {
     console.log(err);
     res.status(204).send(err);
   });

@@ -29,7 +29,7 @@ function getJobPostStatus(req, res) {
         jobPostStatus
       });
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(204).send(err);
     });
 }

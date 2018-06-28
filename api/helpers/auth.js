@@ -62,12 +62,23 @@ exports.verifyToken = function (req, authOrSecDef, token, callback) {
   }
 };
 
-exports.issueToken = function (sub, role) {
-  return jwt.sign({
-      sub,
-      iss,
-      role
-    },
+exports.issueToken = function (userId, email, role, proposalSpace) {
+  let payload = {
+    userId,
+    email,
+    iss,
+    role
+  };
+
+  if (proposalSpace) {
+    payload = {
+      ...payload,
+      proposalSpace
+    };
+  }
+
+  return jwt.sign(
+    payload,
     secret, {
       expiresIn
     }
