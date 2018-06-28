@@ -10,8 +10,8 @@ module.exports = {
 // GET /jobpoststatus operationId
 function getJobPostStatus(req, res) {
   JobPostStatus.findAll()
-    .then((result) => {
-      const jobPostStatus = result.map((node) => {
+    .then(result => {
+      const jobPostStatus = result.map(node => {
         const {
           id,
           description

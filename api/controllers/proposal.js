@@ -14,14 +14,14 @@ module.exports = {
 // POST /submit operationId
 function submit(req, res) {
   const {
-    proposal,
-    jobId
+    jobId,
+    proposal
   } = req.swagger.params;
 
-  Proposal.count({
+  // Get all proposal for given User Id and status = 'Submitted'
+  Proposal.findAll({
     where: {
       UserId: req.auth.userId,
-      JobPostId: jobId.value,
       ProposalStatusId: Constants.Proposal.Status.Submitted.Id
     },
     include: [
@@ -29,9 +29,19 @@ function submit(req, res) {
       JobPost,
       ProposalStatus
     ]
-  }).then(count => {
-    const submittedProposal = count * Constants.Proposal.Point;
+  }).then(result => {
+    const hasSubmitted = result.find(proposal => proposal.dataValues.JobPostId === jobId.value);
 
+    // Freelancer can only submit one proposal to any published job
+    if (hasSubmitted) {
+      return res.status(403).send({
+        message: 'You have submitted proposal for this Job.'
+      });
+    }
+
+    const submittedProposal = result.length * Constants.Proposal.Point;
+
+    // Rank B freelancer can only submit 10times max and rank A can submit 20times max
     if (submittedProposal >= req.auth.proposalSpace) {
       return res.status(403).send({
         message: `Insufficient points. You have submitted ${count} proposal.`
@@ -57,10 +67,6 @@ function submit(req, res) {
       });
     });
   }).catch(err => {
-    console.log({
-      err
-    });
-
     res.status(204).send(err);
   });
 }

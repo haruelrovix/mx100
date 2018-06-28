@@ -21,8 +21,8 @@ function getAll(req, res) {
     include: [
       JobPostStatus
     ]
-  }).then((result) => {
-    const jobs = result.map((node) => {
+  }).then(result => {
+    const jobs = result.map(node => {
       const {
         id,
         title,
@@ -151,7 +151,6 @@ function get(req, res) {
       }
     });
   }).catch(err => {
-    console.log(err);
     res.status(204).send(err);
   });
 }
